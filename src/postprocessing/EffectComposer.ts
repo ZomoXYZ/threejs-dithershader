@@ -1,60 +1,69 @@
+import * as THREE from 'three';
+import { WebGLRenderer, WebGLRenderTarget } from 'three';
+import CopyShader from '../shaders/CopyShader';
+import { ClearMaskPass, MaskPass } from './MaskPass';
+import RenderPass from './RenderPass';
+import ShaderPass from './ShaderPass';
+
 /**
  * @author alteredq / http://alteredqualia.com/
  */
+export default class {
 
-THREE.EffectComposer = function ( renderer, renderTarget ) {
+	renderer: WebGLRenderer;
+	renderTarget1: WebGLRenderTarget;
+	renderTarget2: WebGLRenderTarget;
+	writeBuffer: WebGLRenderTarget;
+	readBuffer: WebGLRenderTarget;
+	passes: RenderPass[];
+	copyPass: ShaderPass;
 
-	this.renderer = renderer;
+	constructor(renderer: WebGLRenderer, renderTarget?: WebGLRenderTarget) {
 
-	if ( renderTarget === undefined ) {
+		this.renderer = renderer;
 
-		var width = window.innerWidth || 1;
-		var height = window.innerHeight || 1;
-		var parameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBuffer: false };
-		//var parameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat, stencilBuffer: false };
+		if ( renderTarget === undefined ) {
 
-		renderTarget = new THREE.WebGLRenderTarget( width, height, parameters );
+			var width = window.innerWidth || 1;
+			var height = window.innerHeight || 1;
+			var parameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat, stencilBuffer: false };
 
+			renderTarget = new THREE.WebGLRenderTarget( width, height, parameters );
+
+		}
+
+		this.renderTarget1 = renderTarget;
+		this.renderTarget2 = renderTarget.clone();
+
+		this.writeBuffer = this.renderTarget1;
+		this.readBuffer = this.renderTarget2;
+
+		this.passes = [];
+
+		this.copyPass = new ShaderPass( CopyShader );
 	}
 
-	this.renderTarget1 = renderTarget;
-	this.renderTarget2 = renderTarget.clone();
-
-	this.writeBuffer = this.renderTarget1;
-	this.readBuffer = this.renderTarget2;
-
-	this.passes = [];
-
-	if ( THREE.CopyShader === undefined )
-		console.error( "THREE.EffectComposer relies on THREE.CopyShader" );
-
-	this.copyPass = new THREE.ShaderPass( THREE.CopyShader );
-
-};
-
-THREE.EffectComposer.prototype = {
-
-	swapBuffers: function() {
+	swapBuffers() {
 
 		var tmp = this.readBuffer;
 		this.readBuffer = this.writeBuffer;
 		this.writeBuffer = tmp;
 
-	},
+	}
 
-	addPass: function ( pass ) {
+	addPass (pass: RenderPass) {
 
 		this.passes.push( pass );
 
-	},
+	}
 
-	insertPass: function ( pass, index ) {
+	insertPass (pass: RenderPass, index: number) {
 
 		this.passes.splice( index, 0, pass );
 
-	},
+	}
 
-	render: function ( delta ) {
+	render (delta) {
 
 		this.writeBuffer = this.renderTarget1;
 		this.readBuffer = this.renderTarget2;
@@ -79,7 +88,7 @@ THREE.EffectComposer.prototype = {
 
 					context.stencilFunc( context.NOTEQUAL, 1, 0xffffffff );
 
-					this.copyPass.render( this.renderer, this.writeBuffer, this.readBuffer, delta );
+					this.copyPass.render( this.renderer, this.writeBuffer, this.readBuffer );
 
 					context.stencilFunc( context.EQUAL, 1, 0xffffffff );
 
@@ -89,11 +98,11 @@ THREE.EffectComposer.prototype = {
 
 			}
 
-			if ( pass instanceof THREE.MaskPass ) {
+			if ( pass instanceof MaskPass ) {
 
 				maskActive = true;
 
-			} else if ( pass instanceof THREE.ClearMaskPass ) {
+			} else if ( pass instanceof ClearMaskPass ) {
 
 				maskActive = false;
 
@@ -101,9 +110,9 @@ THREE.EffectComposer.prototype = {
 
 		}
 
-	},
+	}
 
-	reset: function ( renderTarget ) {
+	reset (renderTarget) {
 
 		if ( renderTarget === undefined ) {
 
@@ -120,9 +129,9 @@ THREE.EffectComposer.prototype = {
 		this.writeBuffer = this.renderTarget1;
 		this.readBuffer = this.renderTarget2;
 
-	},
+	}
 
-	setSize: function ( width, height ) {
+	setSize (width, height) {
 
 		var renderTarget = this.renderTarget1.clone();
 
