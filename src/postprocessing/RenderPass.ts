@@ -39,7 +39,7 @@ export default class RenderPass {
         this.needsSwap = false;
     }
 
-    render(renderer: WebGLRenderer, readBuffer: WebGLRenderTarget) {
+    render(renderer: WebGLRenderer, _writeBuffer: WebGLRenderTarget, readBuffer: WebGLRenderTarget) {
         this.scene.overrideMaterial = this.overrideMaterial;
 
         if (this.clearColor) {

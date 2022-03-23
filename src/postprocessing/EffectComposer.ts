@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { WebGLRenderer, WebGLRenderTarget } from 'three';
 import CopyShader from '../shaders/CopyShader';
+import { Pass } from '../types/types';
 import { ClearMaskPass, MaskPass } from './MaskPass';
-import RenderPass from './RenderPass';
 import ShaderPass from './ShaderPass';
 
 /**
@@ -14,8 +14,8 @@ export default class {
     renderTarget2: WebGLRenderTarget;
     writeBuffer: WebGLRenderTarget;
     readBuffer: WebGLRenderTarget;
-    passes: RenderPass[];
-    copyPass: ShaderPass;
+    passes: Pass[];
+    copyPass: Pass;
 
     constructor(renderer: WebGLRenderer, renderTarget?: WebGLRenderTarget) {
         this.renderer = renderer;
@@ -50,11 +50,11 @@ export default class {
         this.writeBuffer = tmp;
     }
 
-    addPass(pass: RenderPass) {
+    addPass(pass: Pass) {
         this.passes.push(pass);
     }
 
-    insertPass(pass: RenderPass, index: number) {
+    insertPass(pass: Pass, index: number) {
         this.passes.splice(index, 0, pass);
     }
 
@@ -73,7 +73,7 @@ export default class {
 
             if (!pass.enabled) continue;
 
-            pass.render(this.renderer, this.readBuffer);
+            pass.render(this.renderer, this.writeBuffer, this.readBuffer);
 
             if (pass.needsSwap) {
                 if (maskActive) {
