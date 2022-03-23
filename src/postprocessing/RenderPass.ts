@@ -7,7 +7,7 @@ export default class RenderPass {
     scene: Scene;
     camera: Camera;
     overrideMaterial: Material | null;
-    clearColor: ColorRepresentation;
+    clearColor?: ColorRepresentation;
     clearAlpha: number;
     oldClearColor: Color;
     oldClearAlpha: number;
@@ -19,7 +19,7 @@ export default class RenderPass {
         scene: Scene,
         camera: Camera,
         overrideMaterial: Material | null = null,
-        clearColor: ColorRepresentation = '000000',
+        clearColor?: ColorRepresentation,
         clearAlpha: number = 1,
     ) {
         this.scene = scene;
