@@ -6,12 +6,12 @@ import { Camera, Scene, WebGLRenderer, WebGLRenderTarget } from "three";
 
 export class MaskPass {
 
-	scene;
-	camera;
-	enabled;
-	clear;
-	needsSwap;
-	inverse;
+	scene: Scene;
+	camera: Camera;
+	enabled: boolean;
+	clear: boolean;
+	needsSwap: boolean;
+	inverse: boolean;
 	
 	constructor(scene: Scene, camera: Camera) {
 
@@ -57,8 +57,10 @@ export class MaskPass {
 
 		// draw into the stencil buffer
 
-		renderer.render(this.scene, this.camera, readBuffer, this.clear);
-		renderer.render(this.scene, this.camera, writeBuffer, this.clear);
+		renderer.setRenderTarget(readBuffer);
+		renderer.render(this.scene, this.camera); //this.clear
+		renderer.setRenderTarget(writeBuffer);
+		renderer.render(this.scene, this.camera); //this.clear
 
 		// re-enable update of color and depth
 
@@ -72,7 +74,7 @@ export class MaskPass {
 
 	}
 
-};
+}
 
 export class ClearMaskPass {
 
@@ -91,4 +93,4 @@ export class ClearMaskPass {
 	}
 
 
-};
+}
