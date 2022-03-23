@@ -6,26 +6,22 @@ import THREE from 'three';
 export default {
 
 	uniforms: {
-
 		'tDiffuse': { type: 't', value: null },
-		'size':    { type: 'v2', value: new THREE.Vector2( 512, 512 ) },
+		'size':    { type: 'v2', value: new THREE.Vector2(512, 512) },
 		'pixelSize':{ type: 'f', value: 100.0 } // inversed, small number large pixels, large number small pixels.
-
 	},
 
 	vertexShader: `
-	
 		varying vec2 vUv;
 
 		void main() {
 
 			vUv = uv;
-			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+			gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 
 		}`,
 
 	fragmentShader: `
-
 		uniform vec2 size;
 		uniform sampler2D tDiffuse;
 		uniform float pixelSize;

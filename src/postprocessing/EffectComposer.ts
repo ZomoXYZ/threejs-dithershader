@@ -146,9 +146,7 @@ export default class {
 
 // shared ortho camera
 
-THREE.EffectComposer.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-
-THREE.EffectComposer.quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), null);
-
-THREE.EffectComposer.scene = new THREE.Scene();
-THREE.EffectComposer.scene.add(THREE.EffectComposer.quad);
+export const SharedCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+export const SharedQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2));
+export const SharedScene = new THREE.Scene();
+SharedScene.add(SharedQuad);

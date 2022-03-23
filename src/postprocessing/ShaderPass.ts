@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { IUniform, ShaderMaterial, ShaderMaterialParameters, WebGLRenderTarget } from 'three';
-import EffectComposer from './EffectComposer';
+import { IUniform, ShaderMaterial, ShaderMaterialParameters, WebGLRenderer, WebGLRenderTarget } from 'three';
+import { SharedQuad, SharedCamera, SharedScene } from './EffectComposer';
 /**
  * @author alteredq / http://alteredqualia.com/
  */
@@ -19,15 +19,15 @@ export default class ShaderPass {
 
 		this.textureID = textureID;
 
-		this.uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+		this.uniforms = THREE.UniformsUtils.clone(shader.uniforms);
 
-		this.material = new THREE.ShaderMaterial( {
+		this.material = new THREE.ShaderMaterial({
 
 			uniforms: this.uniforms,
 			vertexShader: shader.vertexShader,
 			fragmentShader: shader.fragmentShader
 
-		} );
+		});
 
 		this.renderToScreen = false;
 
@@ -45,15 +45,17 @@ export default class ShaderPass {
 
 		}
 
-		EffectComposer.quad.material = this.material;
+		SharedQuad.material = this.material;
 
 		if (this.renderToScreen) {
 
-			renderer.render(EffectComposer.scene, EffectComposer.camera);
+			renderer.setRenderTarget(writeBuffer);
+			renderer.render(SharedScene, SharedCamera);
 
 		} else {
 
-			renderer.render(EffectComposer.scene, EffectComposer.camera, writeBuffer, this.clear);
+			renderer.setRenderTarget(writeBuffer);
+			renderer.render(SharedScene, SharedCamera);//, this.clear
 
 		}
 

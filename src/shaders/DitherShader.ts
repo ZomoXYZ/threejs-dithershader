@@ -7,25 +7,21 @@
 export default {
 
 	uniforms: {
-		
 		'tDiffuse': { type: 't', value: null },
 		'grayScale': { type: 'i', value: 0 }
-		
 	},
 
 	vertexShader: `
-
 		varying vec2 vUv;
 
 		void main() {
 
 			vUv = uv;
-			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+			gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 
 		}`,
 
 	fragmentShader: `
-
 		uniform sampler2D tDiffuse;
 		uniform int grayScale;
 

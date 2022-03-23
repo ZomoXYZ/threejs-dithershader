@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Camera, Material, Scene, WebGLRenderer } from 'three';
+import { Camera, ColorRepresentation, Material, Scene, WebGLRenderer, WebGLRenderTarget } from 'three';
 /**
  * @author alteredq / http://alteredqualia.com/
  */
@@ -17,7 +17,7 @@ export default class RenderPass {
 	clear;
 	needsSwap;
 	
-	constructor(scene: Scene, camera: Camera, overrideMaterial: Material, clearColor, clearAlpha) {
+	constructor(scene: Scene, camera: Camera, overrideMaterial: Material, clearColor: ColorRepresentation, clearAlpha: number = 1) {
 
 		this.scene = scene;
 		this.camera = camera;
@@ -25,7 +25,7 @@ export default class RenderPass {
 		this.overrideMaterial = overrideMaterial;
 
 		this.clearColor = clearColor;
-		this.clearAlpha = ( clearAlpha !== undefined ) ? clearAlpha : 1;
+		this.clearAlpha = clearAlpha;
 
 		this.oldClearColor = new THREE.Color();
 		this.oldClearAlpha = 1;
@@ -36,20 +36,21 @@ export default class RenderPass {
 
 	}
 
-	render(renderer: WebGLRenderer, writeBuffer, readBuffer, delta) {
+	render(renderer: WebGLRenderer, readBuffer: WebGLRenderTarget) {
 
 		this.scene.overrideMaterial = this.overrideMaterial;
 
 		if (this.clearColor) {
 
-			this.oldClearColor.copy(renderer.getClearColor());
+			renderer.getClearColor(this.oldClearColor);
 			this.oldClearAlpha = renderer.getClearAlpha();
 
 			renderer.setClearColor(this.clearColor, this.clearAlpha);
 
 		}
 
-		renderer.render(this.scene, this.camera, readBuffer, this.clear);
+		renderer.setRenderTarget(readBuffer);
+		renderer.render(this.scene, this.camera); //, this.clear
 
 		if (this.clearColor) {
 

@@ -58,9 +58,9 @@ export class MaskPass {
 		// draw into the stencil buffer
 
 		renderer.setRenderTarget(readBuffer);
-		renderer.render(this.scene, this.camera); //this.clear
+		renderer.render(this.scene, this.camera); //, this.clear
 		renderer.setRenderTarget(writeBuffer);
-		renderer.render(this.scene, this.camera); //this.clear
+		renderer.render(this.scene, this.camera); //, this.clear
 
 		// re-enable update of color and depth
 
