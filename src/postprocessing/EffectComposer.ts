@@ -22,13 +22,13 @@ export default class {
 
 		this.renderer = renderer;
 
-		if ( renderTarget === undefined ) {
+		if (renderTarget === undefined) {
 
 			var width = window.innerWidth || 1;
 			var height = window.innerHeight || 1;
 			var parameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat, stencilBuffer: false };
 
-			renderTarget = new THREE.WebGLRenderTarget( width, height, parameters );
+			renderTarget = new THREE.WebGLRenderTarget(width, height, parameters);
 
 		}
 
@@ -40,7 +40,7 @@ export default class {
 
 		this.passes = [];
 
-		this.copyPass = new ShaderPass( CopyShader );
+		this.copyPass = new ShaderPass(CopyShader);
 	}
 
 	swapBuffers() {
@@ -53,17 +53,17 @@ export default class {
 
 	addPass (pass: RenderPass) {
 
-		this.passes.push( pass );
+		this.passes.push(pass);
 
 	}
 
 	insertPass (pass: RenderPass, index: number) {
 
-		this.passes.splice( index, 0, pass );
+		this.passes.splice(index, 0, pass);
 
 	}
 
-	render (delta) {
+	render () {
 
 		this.writeBuffer = this.renderTarget1;
 		this.readBuffer = this.renderTarget2;
@@ -72,25 +72,25 @@ export default class {
 
 		var pass, i, il = this.passes.length;
 
-		for ( i = 0; i < il; i ++ ) {
+		for (i = 0; i < il; i ++) {
 
 			pass = this.passes[ i ];
 
-			if ( !pass.enabled ) continue;
+			if (!pass.enabled) continue;
 
-			pass.render( this.renderer, this.writeBuffer, this.readBuffer, delta, maskActive );
+			pass.render(this.renderer, this.readBuffer);
 
-			if ( pass.needsSwap ) {
+			if (pass.needsSwap) {
 
-				if ( maskActive ) {
+				if (maskActive) {
 
 					var context = this.renderer.context;
 
-					context.stencilFunc( context.NOTEQUAL, 1, 0xffffffff );
+					context.stencilFunc(context.NOTEQUAL, 1, 0xffffffff);
 
-					this.copyPass.render( this.renderer, this.writeBuffer, this.readBuffer );
+					this.copyPass.render(this.renderer, this.writeBuffer, this.readBuffer);
 
-					context.stencilFunc( context.EQUAL, 1, 0xffffffff );
+					context.stencilFunc(context.EQUAL, 1, 0xffffffff);
 
 				}
 
@@ -98,11 +98,11 @@ export default class {
 
 			}
 
-			if ( pass instanceof MaskPass ) {
+			if (pass instanceof MaskPass) {
 
 				maskActive = true;
 
-			} else if ( pass instanceof ClearMaskPass ) {
+			} else if (pass instanceof ClearMaskPass) {
 
 				maskActive = false;
 
@@ -112,9 +112,9 @@ export default class {
 
 	}
 
-	reset (renderTarget) {
+	reset (renderTarget: WebGLRenderTarget) {
 
-		if ( renderTarget === undefined ) {
+		if (renderTarget === undefined) {
 
 			renderTarget = this.renderTarget1.clone();
 
@@ -131,14 +131,14 @@ export default class {
 
 	}
 
-	setSize (width, height) {
+	setSize (width: number, height: number) {
 
 		var renderTarget = this.renderTarget1.clone();
 
 		renderTarget.width = width;
 		renderTarget.height = height;
 
-		this.reset( renderTarget );
+		this.reset(renderTarget);
 
 	}
 
@@ -146,9 +146,9 @@ export default class {
 
 // shared ortho camera
 
-THREE.EffectComposer.camera = new THREE.OrthographicCamera( -1, 1, 1, -1, 0, 1 );
+THREE.EffectComposer.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-THREE.EffectComposer.quad = new THREE.Mesh( new THREE.PlaneGeometry( 2, 2 ), null );
+THREE.EffectComposer.quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), null);
 
 THREE.EffectComposer.scene = new THREE.Scene();
-THREE.EffectComposer.scene.add( THREE.EffectComposer.quad );
+THREE.EffectComposer.scene.add(THREE.EffectComposer.quad);
