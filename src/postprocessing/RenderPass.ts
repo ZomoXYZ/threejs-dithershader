@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import { Camera, Color, ColorRepresentation, Material, Scene, WebGLRenderer, WebGLRenderTarget } from 'three';
 /**
  * @author alteredq / http://alteredqualia.com/
@@ -31,7 +30,7 @@ export default class RenderPass {
         this.clearColor = clearColor;
         this.clearAlpha = clearAlpha;
 
-        this.oldClearColor = new THREE.Color();
+        this.oldClearColor = new Color();
         this.oldClearAlpha = 1;
 
         this.enabled = true;

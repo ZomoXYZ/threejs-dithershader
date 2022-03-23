@@ -1,5 +1,11 @@
-import * as THREE from 'three';
-import { IUniform, ShaderMaterial, ShaderMaterialParameters, WebGLRenderer, WebGLRenderTarget } from 'three';
+import {
+    IUniform,
+    ShaderMaterial,
+    ShaderMaterialParameters,
+    UniformsUtils,
+    WebGLRenderer,
+    WebGLRenderTarget,
+} from 'three';
 import { SharedQuad, SharedCamera, SharedScene } from './EffectComposer';
 /**
  * @author alteredq / http://alteredqualia.com/
@@ -17,9 +23,9 @@ export default class ShaderPass {
     constructor(shader: ShaderMaterialParameters, textureID = 'tDiffuse') {
         this.textureID = textureID;
 
-        this.uniforms = THREE.UniformsUtils.clone(shader.uniforms);
+        this.uniforms = UniformsUtils.clone(shader.uniforms);
 
-        this.material = new THREE.ShaderMaterial({
+        this.material = new ShaderMaterial({
             uniforms: this.uniforms,
             vertexShader: shader.vertexShader,
             fragmentShader: shader.fragmentShader,

@@ -1,5 +1,13 @@
-import * as THREE from 'three';
-import { WebGLRenderer, WebGLRenderTarget } from 'three';
+import {
+    LinearFilter,
+    Mesh,
+    OrthographicCamera,
+    PlaneGeometry,
+    RGBAFormat,
+    Scene,
+    WebGLRenderer,
+    WebGLRenderTarget,
+} from 'three';
 import CopyShader from '../shaders/CopyShader';
 import { Pass } from '../types/types';
 import { ClearMaskPass, MaskPass } from './MaskPass';
@@ -24,13 +32,13 @@ export default class {
             var width = window.innerWidth || 1;
             var height = window.innerHeight || 1;
             var parameters = {
-                minFilter: THREE.LinearFilter,
-                magFilter: THREE.LinearFilter,
-                format: THREE.RGBAFormat,
+                minFilter: LinearFilter,
+                magFilter: LinearFilter,
+                format: RGBAFormat,
                 stencilBuffer: false,
             };
 
-            renderTarget = new THREE.WebGLRenderTarget(width, height, parameters);
+            renderTarget = new WebGLRenderTarget(width, height, parameters);
         }
 
         this.renderTarget1 = renderTarget;
@@ -124,7 +132,7 @@ export default class {
 
 // shared ortho camera
 
-export const SharedCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-export const SharedQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2));
-export const SharedScene = new THREE.Scene();
+export const SharedCamera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
+export const SharedQuad = new Mesh(new PlaneGeometry(2, 2));
+export const SharedScene = new Scene();
 SharedScene.add(SharedQuad);
