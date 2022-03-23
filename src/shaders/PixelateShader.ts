@@ -7,8 +7,8 @@ export default {
 
 	uniforms: {
 		'tDiffuse': { type: 't', value: null },
-		'size':    { type: 'v2', value: new THREE.Vector2(512, 512) },
-		'pixelSize':{ type: 'f', value: 100.0 } // inversed, small number large pixels, large number small pixels.
+		'size': { type: 'v2', value: new THREE.Vector2(512, 512) },
+		'pixelSize': { type: 'f', value: 100.0 } // inversed, small number large pixels, large number small pixels.
 	},
 
 	vertexShader: `
