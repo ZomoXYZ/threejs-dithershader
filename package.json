@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Based entirely on \"C64 Shader\" but with changes to play around with dithering and colors.",
   "main": "src/index.ts",
+  "files": ["lib/**/*"],
   "scripts": {
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
