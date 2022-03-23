@@ -2,8 +2,11 @@
   "name": "threejs-dithershader",
   "version": "1.0.0",
   "description": "Based entirely on \"C64 Shader\" but with changes to play around with dithering and colors.",
-  "main": "src/index.ts",
-  "files": ["lib/**/*"],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
@@ -13,8 +16,8 @@
     "type": "git",
     "url": "git+https://github.com/ZomoXYZ/threejs-dithershader.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "ashley zomo",
+  "license": "unlicensed",
   "bugs": {
     "url": "https://github.com/ZomoXYZ/threejs-dithershader/issues"
   },
