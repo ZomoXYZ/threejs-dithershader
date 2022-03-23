@@ -5,12 +5,12 @@
  */
 
 export default {
-  uniforms: {
-    tDiffuse: { type: 't', value: null },
-    opacity: { type: 'f', value: 1.0 },
-  },
+    uniforms: {
+        tDiffuse: { type: 't', value: null },
+        opacity: { type: 'f', value: 1.0 },
+    },
 
-  vertexShader: `
+    vertexShader: `
 		varying vec2 vUv;
 
 		void main() {
@@ -20,7 +20,7 @@ export default {
 
 		}`,
 
-  fragmentShader: `
+    fragmentShader: `
 		uniform float opacity;
 
 		uniform sampler2D tDiffuse;

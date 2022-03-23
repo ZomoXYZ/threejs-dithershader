@@ -4,13 +4,13 @@ import * as THREE from 'three';
  * @author @oosmoxiecode
  */
 export default {
-  uniforms: {
-    tDiffuse: { type: 't', value: null },
-    size: { type: 'v2', value: new THREE.Vector2(512, 512) },
-    pixelSize: { type: 'f', value: 100.0 }, // inversed, small number large pixels, large number small pixels.
-  },
+    uniforms: {
+        tDiffuse: { type: 't', value: null },
+        size: { type: 'v2', value: new THREE.Vector2(512, 512) },
+        pixelSize: { type: 'f', value: 100.0 }, // inversed, small number large pixels, large number small pixels.
+    },
 
-  vertexShader: `
+    vertexShader: `
 		varying vec2 vUv;
 
 		void main() {
@@ -20,7 +20,7 @@ export default {
 
 		}`,
 
-  fragmentShader: `
+    fragmentShader: `
 		uniform vec2 size;
 		uniform sampler2D tDiffuse;
 		uniform float pixelSize;

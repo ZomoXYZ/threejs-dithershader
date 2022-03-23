@@ -8,12 +8,12 @@ import DitherShader from './shaders/DitherShader';
 import PixelateShader from './shaders/PixelateShader';
 
 export default {
-  EffectComposer,
-  MaskPass,
-  RenderPass,
-  ShaderPass,
-  C64Shader,
-  CopyShader,
-  DitherShader,
-  PixelateShader,
+    EffectComposer,
+    MaskPass,
+    RenderPass,
+    ShaderPass,
+    C64Shader,
+    CopyShader,
+    DitherShader,
+    PixelateShader,
 };
