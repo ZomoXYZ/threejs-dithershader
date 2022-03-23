@@ -1,19 +1,8 @@
-import EffectComposer from './postprocessing/EffectComposer';
-import { MaskPass } from './postprocessing/MaskPass';
-import RenderPass from './postprocessing/RenderPass';
-import ShaderPass from './postprocessing/ShaderPass';
-import C64Shader from './shaders/C64Shader';
-import CopyShader from './shaders/CopyShader';
-import DitherShader from './shaders/DitherShader';
-import PixelateShader from './shaders/PixelateShader';
-
-export default {
-    EffectComposer,
-    MaskPass,
-    RenderPass,
-    ShaderPass,
-    C64Shader,
-    CopyShader,
-    DitherShader,
-    PixelateShader,
-};
+export { default as EffectComposer } from './postprocessing/EffectComposer';
+export { MaskPass } from './postprocessing/MaskPass';
+export { default as RenderPass } from './postprocessing/RenderPass';
+export { default as ShaderPass } from './postprocessing/ShaderPass';
+export { default as C64Shader } from './shaders/C64Shader';
+export { default as CopyShader } from './shaders/CopyShader';
+export { default as DitherShader } from './shaders/DitherShader';
+export { default as PixelateShader } from './shaders/PixelateShader';
