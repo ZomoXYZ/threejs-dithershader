@@ -2,12 +2,11 @@
  * @author @oosmoxiecode
  */
 export default {
+  uniforms: {
+    tDiffuse: { type: 't', value: null },
+  },
 
-	uniforms: {
-		'tDiffuse': { type: 't', value: null },
-	},
-
-	vertexShader: `
+  vertexShader: `
 		varying vec2 vUv;
 
 		void main() {
@@ -17,7 +16,7 @@ export default {
 
 		}`,
 
-	fragmentShader: `
+  fragmentShader: `
 		uniform sampler2D tDiffuse;
 
 		varying vec2 vUv;
@@ -68,6 +67,5 @@ export default {
 
 			gl_FragColor = color;
 
-		}`
-
-}
+		}`,
+};

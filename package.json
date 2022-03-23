@@ -4,7 +4,9 @@
   "description": "Based entirely on \"C64 Shader\" but with changes to play around with dithering and colors.",
   "main": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "eslint"
   },
   "repository": {
     "type": "git",
@@ -17,8 +19,15 @@
   },
   "homepage": "https://github.com/ZomoXYZ/threejs-dithershader#readme",
   "dependencies": {
-    "@types/three": "^0.138.0",
     "three": "^0.138.3",
     "typescript": "^4.6.2"
+  },
+  "devDependencies": {
+    "@types/three": "^0.138.0",
+    "@typescript-eslint/eslint-plugin": "^5.16.0",
+    "@typescript-eslint/parser": "^5.16.0",
+    "eslint": "^8.11.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.6.0"
   }
 }

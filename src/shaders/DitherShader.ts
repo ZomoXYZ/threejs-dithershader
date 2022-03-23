@@ -5,13 +5,12 @@
  */
 
 export default {
+  uniforms: {
+    tDiffuse: { type: 't', value: null },
+    grayScale: { type: 'i', value: 0 },
+  },
 
-	uniforms: {
-		'tDiffuse': { type: 't', value: null },
-		'grayScale': { type: 'i', value: 0 }
-	},
-
-	vertexShader: `
+  vertexShader: `
 		varying vec2 vUv;
 
 		void main() {
@@ -21,7 +20,7 @@ export default {
 
 		}`,
 
-	fragmentShader: `
+  fragmentShader: `
 		uniform sampler2D tDiffuse;
 		uniform int grayScale;
 
@@ -198,6 +197,5 @@ export default {
 				gl_FragColor = vec4(final, final, final, 1.0);
 			}
 
-		}`
-
-}
+		}`,
+};

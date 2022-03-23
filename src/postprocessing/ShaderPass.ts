@@ -6,59 +6,45 @@ import { SharedQuad, SharedCamera, SharedScene } from './EffectComposer';
  */
 
 export default class ShaderPass {
+  textureID: string;
+  uniforms: { [uniform: string]: IUniform };
+  material: ShaderMaterial;
+  renderToScreen: boolean;
+  enabled: boolean;
+  needsSwap: boolean;
+  clear: boolean;
 
-	textureID: string;
-	uniforms: { [uniform: string]: IUniform };
-	material: ShaderMaterial;
-	renderToScreen: boolean;
-	enabled: boolean;
-	needsSwap: boolean;
-	clear: boolean;
+  constructor(shader: ShaderMaterialParameters, textureID = 'tDiffuse') {
+    this.textureID = textureID;
 
-	constructor(shader: ShaderMaterialParameters, textureID = 'tDiffuse') {
+    this.uniforms = THREE.UniformsUtils.clone(shader.uniforms);
 
-		this.textureID = textureID;
+    this.material = new THREE.ShaderMaterial({
+      uniforms: this.uniforms,
+      vertexShader: shader.vertexShader,
+      fragmentShader: shader.fragmentShader,
+    });
 
-		this.uniforms = THREE.UniformsUtils.clone(shader.uniforms);
+    this.renderToScreen = false;
 
-		this.material = new THREE.ShaderMaterial({
+    this.enabled = true;
+    this.needsSwap = true;
+    this.clear = false;
+  }
 
-			uniforms: this.uniforms,
-			vertexShader: shader.vertexShader,
-			fragmentShader: shader.fragmentShader
+  render(renderer: WebGLRenderer, writeBuffer: WebGLRenderTarget, readBuffer: WebGLRenderTarget) {
+    if (this.uniforms[this.textureID]) {
+      this.uniforms[this.textureID].value = readBuffer;
+    }
 
-		});
+    SharedQuad.material = this.material;
 
-		this.renderToScreen = false;
-
-		this.enabled = true;
-		this.needsSwap = true;
-		this.clear = false;
-
-	}
-
-	render(renderer: WebGLRenderer, writeBuffer: WebGLRenderTarget, readBuffer: WebGLRenderTarget) {
-
-		if (this.uniforms[this.textureID]) {
-
-			this.uniforms[this.textureID].value = readBuffer;
-
-		}
-
-		SharedQuad.material = this.material;
-
-		if (this.renderToScreen) {
-
-			renderer.setRenderTarget(writeBuffer);
-			renderer.render(SharedScene, SharedCamera);
-
-		} else {
-
-			renderer.setRenderTarget(writeBuffer);
-			renderer.render(SharedScene, SharedCamera);//, this.clear
-
-		}
-
-	}
-
-};
+    if (this.renderToScreen) {
+      renderer.setRenderTarget(writeBuffer);
+      renderer.render(SharedScene, SharedCamera);
+    } else {
+      renderer.setRenderTarget(writeBuffer);
+      renderer.render(SharedScene, SharedCamera); //, this.clear
+    }
+  }
+}

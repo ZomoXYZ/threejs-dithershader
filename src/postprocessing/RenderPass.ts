@@ -5,60 +5,57 @@ import { Camera, ColorRepresentation, Material, Scene, WebGLRenderer, WebGLRende
  */
 
 export default class RenderPass {
+  scene: Scene;
+  camera: Camera;
+  overrideMaterial: Material;
+  clearColor;
+  clearAlpha;
+  oldClearColor;
+  oldClearAlpha;
+  enabled;
+  clear;
+  needsSwap;
 
-	scene: Scene;
-	camera: Camera;
-	overrideMaterial: Material;
-	clearColor;
-	clearAlpha;
-	oldClearColor;
-	oldClearAlpha;
-	enabled;
-	clear;
-	needsSwap;
-	
-	constructor(scene: Scene, camera: Camera, overrideMaterial: Material, clearColor: ColorRepresentation, clearAlpha: number = 1) {
+  constructor(
+    scene: Scene,
+    camera: Camera,
+    overrideMaterial: Material,
+    clearColor: ColorRepresentation,
+    clearAlpha: number = 1,
+  ) {
+    this.scene = scene;
+    this.camera = camera;
 
-		this.scene = scene;
-		this.camera = camera;
+    this.overrideMaterial = overrideMaterial;
 
-		this.overrideMaterial = overrideMaterial;
+    this.clearColor = clearColor;
+    this.clearAlpha = clearAlpha;
 
-		this.clearColor = clearColor;
-		this.clearAlpha = clearAlpha;
+    this.oldClearColor = new THREE.Color();
+    this.oldClearAlpha = 1;
 
-		this.oldClearColor = new THREE.Color();
-		this.oldClearAlpha = 1;
+    this.enabled = true;
+    this.clear = true;
+    this.needsSwap = false;
+  }
 
-		this.enabled = true;
-		this.clear = true;
-		this.needsSwap = false;
+  render(renderer: WebGLRenderer, readBuffer: WebGLRenderTarget) {
+    this.scene.overrideMaterial = this.overrideMaterial;
 
-	}
+    if (this.clearColor) {
+      renderer.getClearColor(this.oldClearColor);
+      this.oldClearAlpha = renderer.getClearAlpha();
 
-	render(renderer: WebGLRenderer, readBuffer: WebGLRenderTarget) {
+      renderer.setClearColor(this.clearColor, this.clearAlpha);
+    }
 
-		this.scene.overrideMaterial = this.overrideMaterial;
+    renderer.setRenderTarget(readBuffer);
+    renderer.render(this.scene, this.camera); //, this.clear
 
-		if (this.clearColor) {
+    if (this.clearColor) {
+      renderer.setClearColor(this.oldClearColor, this.oldClearAlpha);
+    }
 
-			renderer.getClearColor(this.oldClearColor);
-			this.oldClearAlpha = renderer.getClearAlpha();
-
-			renderer.setClearColor(this.clearColor, this.clearAlpha);
-
-		}
-
-		renderer.setRenderTarget(readBuffer);
-		renderer.render(this.scene, this.camera); //, this.clear
-
-		if (this.clearColor) {
-
-			renderer.setClearColor(this.oldClearColor, this.oldClearAlpha);
-
-		}
-
-		this.scene.overrideMaterial = null;
-
-	}
+    this.scene.overrideMaterial = null;
+  }
 }

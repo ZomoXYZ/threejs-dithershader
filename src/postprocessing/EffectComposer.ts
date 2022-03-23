@@ -9,140 +9,118 @@ import ShaderPass from './ShaderPass';
  * @author alteredq / http://alteredqualia.com/
  */
 export default class {
+  renderer: WebGLRenderer;
+  renderTarget1: WebGLRenderTarget;
+  renderTarget2: WebGLRenderTarget;
+  writeBuffer: WebGLRenderTarget;
+  readBuffer: WebGLRenderTarget;
+  passes: RenderPass[];
+  copyPass: ShaderPass;
 
-	renderer: WebGLRenderer;
-	renderTarget1: WebGLRenderTarget;
-	renderTarget2: WebGLRenderTarget;
-	writeBuffer: WebGLRenderTarget;
-	readBuffer: WebGLRenderTarget;
-	passes: RenderPass[];
-	copyPass: ShaderPass;
+  constructor(renderer: WebGLRenderer, renderTarget?: WebGLRenderTarget) {
+    this.renderer = renderer;
 
-	constructor(renderer: WebGLRenderer, renderTarget?: WebGLRenderTarget) {
+    if (renderTarget === undefined) {
+      var width = window.innerWidth || 1;
+      var height = window.innerHeight || 1;
+      var parameters = {
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+        format: THREE.RGBAFormat,
+        stencilBuffer: false,
+      };
 
-		this.renderer = renderer;
+      renderTarget = new THREE.WebGLRenderTarget(width, height, parameters);
+    }
 
-		if (renderTarget === undefined) {
+    this.renderTarget1 = renderTarget;
+    this.renderTarget2 = renderTarget.clone();
 
-			var width = window.innerWidth || 1;
-			var height = window.innerHeight || 1;
-			var parameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat, stencilBuffer: false };
+    this.writeBuffer = this.renderTarget1;
+    this.readBuffer = this.renderTarget2;
 
-			renderTarget = new THREE.WebGLRenderTarget(width, height, parameters);
+    this.passes = [];
 
-		}
+    this.copyPass = new ShaderPass(CopyShader);
+  }
 
-		this.renderTarget1 = renderTarget;
-		this.renderTarget2 = renderTarget.clone();
+  swapBuffers() {
+    var tmp = this.readBuffer;
+    this.readBuffer = this.writeBuffer;
+    this.writeBuffer = tmp;
+  }
 
-		this.writeBuffer = this.renderTarget1;
-		this.readBuffer = this.renderTarget2;
+  addPass(pass: RenderPass) {
+    this.passes.push(pass);
+  }
 
-		this.passes = [];
+  insertPass(pass: RenderPass, index: number) {
+    this.passes.splice(index, 0, pass);
+  }
 
-		this.copyPass = new ShaderPass(CopyShader);
-	}
+  render() {
+    this.writeBuffer = this.renderTarget1;
+    this.readBuffer = this.renderTarget2;
 
-	swapBuffers() {
+    var maskActive = false;
 
-		var tmp = this.readBuffer;
-		this.readBuffer = this.writeBuffer;
-		this.writeBuffer = tmp;
+    var pass,
+      i,
+      il = this.passes.length;
 
-	}
+    for (i = 0; i < il; i++) {
+      pass = this.passes[i];
 
-	addPass (pass: RenderPass) {
+      if (!pass.enabled) continue;
 
-		this.passes.push(pass);
+      pass.render(this.renderer, this.readBuffer);
 
-	}
+      if (pass.needsSwap) {
+        if (maskActive) {
+          var context = this.renderer.context;
 
-	insertPass (pass: RenderPass, index: number) {
+          context.stencilFunc(context.NOTEQUAL, 1, 0xffffffff);
 
-		this.passes.splice(index, 0, pass);
+          this.copyPass.render(this.renderer, this.writeBuffer, this.readBuffer);
 
-	}
+          context.stencilFunc(context.EQUAL, 1, 0xffffffff);
+        }
 
-	render () {
+        this.swapBuffers();
+      }
 
-		this.writeBuffer = this.renderTarget1;
-		this.readBuffer = this.renderTarget2;
+      if (pass instanceof MaskPass) {
+        maskActive = true;
+      } else if (pass instanceof ClearMaskPass) {
+        maskActive = false;
+      }
+    }
+  }
 
-		var maskActive = false;
+  reset(renderTarget: WebGLRenderTarget) {
+    if (renderTarget === undefined) {
+      renderTarget = this.renderTarget1.clone();
 
-		var pass, i, il = this.passes.length;
+      renderTarget.width = window.innerWidth;
+      renderTarget.height = window.innerHeight;
+    }
 
-		for (i = 0; i < il; i ++) {
+    this.renderTarget1 = renderTarget;
+    this.renderTarget2 = renderTarget.clone();
 
-			pass = this.passes[ i ];
+    this.writeBuffer = this.renderTarget1;
+    this.readBuffer = this.renderTarget2;
+  }
 
-			if (!pass.enabled) continue;
+  setSize(width: number, height: number) {
+    var renderTarget = this.renderTarget1.clone();
 
-			pass.render(this.renderer, this.readBuffer);
+    renderTarget.width = width;
+    renderTarget.height = height;
 
-			if (pass.needsSwap) {
-
-				if (maskActive) {
-
-					var context = this.renderer.context;
-
-					context.stencilFunc(context.NOTEQUAL, 1, 0xffffffff);
-
-					this.copyPass.render(this.renderer, this.writeBuffer, this.readBuffer);
-
-					context.stencilFunc(context.EQUAL, 1, 0xffffffff);
-
-				}
-
-				this.swapBuffers();
-
-			}
-
-			if (pass instanceof MaskPass) {
-
-				maskActive = true;
-
-			} else if (pass instanceof ClearMaskPass) {
-
-				maskActive = false;
-
-			}
-
-		}
-
-	}
-
-	reset (renderTarget: WebGLRenderTarget) {
-
-		if (renderTarget === undefined) {
-
-			renderTarget = this.renderTarget1.clone();
-
-			renderTarget.width = window.innerWidth;
-			renderTarget.height = window.innerHeight;
-
-		}
-
-		this.renderTarget1 = renderTarget;
-		this.renderTarget2 = renderTarget.clone();
-
-		this.writeBuffer = this.renderTarget1;
-		this.readBuffer = this.renderTarget2;
-
-	}
-
-	setSize (width: number, height: number) {
-
-		var renderTarget = this.renderTarget1.clone();
-
-		renderTarget.width = width;
-		renderTarget.height = height;
-
-		this.reset(renderTarget);
-
-	}
-
-};
+    this.reset(renderTarget);
+  }
+}
 
 // shared ortho camera
 
